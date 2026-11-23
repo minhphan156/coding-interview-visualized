@@ -80,10 +80,12 @@ export type Problem = {
   number: number;
   title: string;
   difficulty: Difficulty;
-  url: string;
   pattern: string;
   tags: string[];
   description: string[];
+  /** `explanation` is shown preformatted, so aligned diagrams keep their spacing. */
+  examples?: { input: string; output: string; explanation?: string }[];
+  constraints?: string[];
   keyIdeas: string[];
   complexity: { time: string; space: string };
   language: string;

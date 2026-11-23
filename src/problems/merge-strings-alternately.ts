@@ -24,14 +24,35 @@ export const mergeStringsAlternately: Problem = {
   number: 1768,
   title: "Merge Strings Alternately",
   difficulty: "Easy",
-  url: "https://leetcode.com/problems/merge-strings-alternately/",
   pattern: "Two pointers (walk both strings)",
   tags: ["Two Pointers", "String"],
   description: [
     "You are given two strings word1 and word2. Merge the strings by adding letters in alternating order, starting with word1. If a string is longer than the other, append the additional letters onto the end of the merged string.",
     "Return the merged string.",
-    'Example: word1 = "ab", word2 = "pqrs" → "apbqrs". word2 is longer, so "rs" is appended to the end.',
-    "Constraints: 1 ≤ word1.length, word2.length ≤ 100, and both contain only lowercase English letters.",
+  ],
+  examples: [
+    {
+      input: 'const word1: string = "abc";\nconst word2: string = "pqr";',
+      output: '"apbqcr"',
+      explanation:
+        "The merged string will be merged as so:\nword1:  a   b   c\nword2:    p   q   r\nmerged: a p b q c r",
+    },
+    {
+      input: 'const word1: string = "ab";\nconst word2: string = "pqrs";',
+      output: '"apbqrs"',
+      explanation:
+        'Notice that as word2 is longer, "rs" is appended to the end.\nword1:  a   b \nword2:    p   q   r   s\nmerged: a p b q   r   s',
+    },
+    {
+      input: 'const word1: string = "abcd";\nconst word2: string = "pq";',
+      output: '"apbqcd"',
+      explanation:
+        'Notice that as word1 is longer, "cd" is appended to the end.\nword1:  a   b   c   d\nword2:    p   q \nmerged: a p b q c   d',
+    },
+  ],
+  constraints: [
+    "1 <= word1.length, word2.length <= 100",
+    "word1 and word2 consist of lowercase English letters.",
   ],
   keyIdeas: [
     "Walk one index i from 0 up to the length of the longer word.",

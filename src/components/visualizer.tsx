@@ -5,7 +5,6 @@ import {
   Brain,
   ChevronFirst,
   ChevronLast,
-  ExternalLink,
   EyeOff,
   Eye,
   Pause,
@@ -166,14 +165,6 @@ export function Visualizer({ slug }: { slug: string }) {
             </div>
           </div>
         </div>
-        <a
-          href={problem.url}
-          target="_blank"
-          rel="noreferrer"
-          className={cn(buttonVariants({ variant: "outline", size: "sm" }), "self-start sm:self-center")}
-        >
-          Open on LeetCode <ExternalLink />
-        </a>
       </header>
 
       <div className="grid flex-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(380px,440px)]">
@@ -387,9 +378,37 @@ export function Visualizer({ slug }: { slug: string }) {
               {problem.description.map((p, i) => (
                 <p key={i}>{p}</p>
               ))}
-              <a href={problem.url} target="_blank" rel="noreferrer" className="text-xs text-sky-300 hover:underline">
-                Read the full statement and constraints on LeetCode →
-              </a>
+              {problem.examples?.map((ex, i) => (
+                <div key={i} className="flex flex-col gap-1.5">
+                  <p className="font-semibold">Example {i + 1}:</p>
+                  <div className="overflow-x-auto rounded-lg border border-border bg-zinc-950/60 p-3 font-mono text-[12.5px] leading-relaxed">
+                    <p className="text-muted-foreground">Input:</p>
+                    <pre className="whitespace-pre text-zinc-200">{ex.input}</pre>
+                    <p className="mt-2">
+                      <span className="text-muted-foreground">Output: </span>
+                      <span className="text-emerald-300">{ex.output}</span>
+                    </p>
+                    {ex.explanation && (
+                      <>
+                        <p className="mt-2 text-muted-foreground">Explanation:</p>
+                        <pre className="whitespace-pre text-zinc-200">{ex.explanation}</pre>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {problem.constraints && problem.constraints.length > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <p className="font-semibold">Constraints:</p>
+                  <ul className="flex list-disc flex-col gap-1 pl-5">
+                    {problem.constraints.map((c, i) => (
+                      <li key={i}>
+                        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[12.5px]">{c}</code>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </TabsContent>
           </Tabs>
         </aside>
