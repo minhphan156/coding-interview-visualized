@@ -62,7 +62,7 @@ export function CodePanel({ code, activeLine, recallMode, revealedLines }: Props
       {lines.map((line, idx) => {
         const n = idx + 1;
         const active = n === activeLine;
-        const hidden = recallMode && !revealedLines.has(n) && line.trim() !== "";
+        const hidden = recallMode && !revealedLines.has(n) && /\w/.test(line);
         return (
           <div key={n} ref={active ? activeRef : undefined} className="relative flex min-w-max pr-4">
             {active && (
