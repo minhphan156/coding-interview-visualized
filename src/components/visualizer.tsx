@@ -26,6 +26,7 @@ import { CodePanel } from "@/components/viz/code-panel";
 import { StructureView } from "@/components/viz/structures";
 import { DifficultyBadge } from "@/components/difficulty-badge";
 import { ResizableWorkspace, useIsDesktop } from "@/components/resizable-layout";
+import { NotesPanel } from "@/components/notes-panel";
 import { StudyGuide } from "@/components/study-guide";
 import { cn } from "@/lib/utils";
 import type { Frame, InputValues, Problem, Viz } from "@/lib/viz/types";
@@ -303,6 +304,7 @@ export function Visualizer({ slug }: { slug: string }) {
         <TabsTrigger value="code">Code</TabsTrigger>
         <TabsTrigger value="guide">Guide</TabsTrigger>
         <TabsTrigger value="problem">Problem</TabsTrigger>
+        <TabsTrigger value="notes">Notes</TabsTrigger>
       </TabsList>
       <TabsContent value="code" className="flex flex-col gap-3 pt-1">
         <div className="flex items-center justify-between gap-2">
@@ -383,6 +385,9 @@ export function Visualizer({ slug }: { slug: string }) {
         <a href={problem.url} target="_blank" rel="noreferrer" className="text-xs text-sky-300 hover:underline">
           Open this problem on LeetCode →
         </a>
+      </TabsContent>
+      <TabsContent value="notes" className="pt-1">
+        <NotesPanel slug={problem.slug} title={`${problem.number}. ${problem.title}`} />
       </TabsContent>
     </Tabs>
   </aside>
