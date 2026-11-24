@@ -23,6 +23,12 @@ export const twoSum: Problem = {
     "Given an array of integers nums and an integer target, return the indices of the two numbers that add up to target.",
     "Each input has exactly one solution, and you may not use the same element twice.",
   ],
+  keyIdeas: [
+    "For each number, the partner you need is target − num.",
+    "Remember every number you've passed in a hash map of value → index.",
+    "Check the map before inserting, so an element never pairs with itself.",
+    "One pass and O(1) lookups give O(n) instead of the O(n²) brute force.",
+  ],
   guide: {
     why: {
       intro: "This is the foundation for the Hash Map pattern: trading memory for speed. It tests:",

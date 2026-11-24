@@ -26,6 +26,12 @@ export const containerWithMostWater: Problem = {
     "You are given n vertical lines, where line i has height height[i].",
     "Pick two lines that, together with the x-axis, form a container holding the most water, and return that maximum amount.",
   ],
+  keyIdeas: [
+    "Start with the widest container: one pointer at each end.",
+    "Water level = the shorter line, so area = width × min(height[left], height[right]).",
+    "Moving the taller line can never help: width shrinks and the level is still capped by the shorter line.",
+    "So always move the shorter side inward and hope for a taller line.",
+  ],
   guide: {
     why: {
       intro: "This is the showcase for the opposite-ends Two Pointers pattern, backed by a greedy argument. It tests:",

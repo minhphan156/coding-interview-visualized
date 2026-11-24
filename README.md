@@ -32,7 +32,7 @@ Each problem is one file in `src/problems/`, registered in `src/problems/index.t
 A problem (the `Problem` type in `src/lib/viz/types.ts`) contains:
 
 - metadata: `number`, `title`, `difficulty`, `pattern`, `tags`, `url` (the LeetCode link), `description`, and optionally `examples` and `constraints` (the full statement as pasted)
-- `guide` (why, what, how and pitfalls) and `complexity`, shown on the Guide tab
+- `keyIdeas` (the general idea, step by step), `guide` (why, what, how and pitfalls) and `complexity`, all shown on the Guide tab
 - `code`, the solution exactly as you want to learn it (Python or TypeScript)
 - `inputs` and `presets`, the editable test cases
 - `trace(input)`, which re-implements the solution and records a `Frame` at each step. A frame holds the 1-based code line, a message, and a snapshot of the data structures to draw (`array`, `map`, `stack`, `grid` or `vars`).

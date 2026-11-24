@@ -55,6 +55,12 @@ export const mergeStringsAlternately: Problem = {
     "1 <= word1.length, word2.length <= 100",
     "word1 and word2 consist of lowercase English letters.",
   ],
+  keyIdeas: [
+    "Walk one index i from 0 up to the length of the longer word.",
+    "At each i, take word1[i] first, then word2[i]. That gives the alternating order.",
+    "Guard each take with a bounds check (i < length). Once the shorter word runs out, its check fails and the longer word's leftovers are appended automatically.",
+    "No special case is needed for the tail: the loop over max(len1, len2) handles it.",
+  ],
   guide: {
     why: {
       intro: "This is the foundation for the Two Pointers pattern. It tests:",

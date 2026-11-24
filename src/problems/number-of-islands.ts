@@ -41,6 +41,12 @@ export const numberOfIslands: Problem = {
     'Given an m × n grid of "1" (land) and "0" (water), return the number of islands.',
     "An island is land connected horizontally or vertically and surrounded by water. Everything outside the grid counts as water.",
   ],
+  keyIdeas: [
+    "Scan every cell. Each time you hit unvisited land, you've found a new island, so count it.",
+    "Immediately flood-fill (DFS) that island, marking every connected land cell as visited ('#').",
+    "Marked cells are never counted again, so each island is counted exactly once.",
+    "The DFS stops at edges, water, and already-visited cells.",
+  ],
   guide: {
     why: {
       intro: "This is the gateway to graph traversal on a grid (DFS/BFS flood fill). It tests:",

@@ -62,6 +62,21 @@ export function StudyGuide({ problem, languageName }: { problem: Problem; langua
 
       <Section label="HOW" title="how to solve it" accent="text-amber-300">
         <p>{how.insight}</p>
+        <div className="rounded-lg border border-amber-400/25 bg-amber-400/5 p-3">
+          <p className="mb-2 font-mono text-[11px] font-semibold tracking-wide text-amber-200/90 uppercase">
+            The general idea, step by step
+          </p>
+          <ol className="flex flex-col gap-2">
+            {problem.keyIdeas.map((idea, i) => (
+              <li key={i} className="flex gap-2.5">
+                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-amber-400/15 font-mono text-[11px] text-amber-200">
+                  {i + 1}
+                </span>
+                {idea}
+              </li>
+            ))}
+          </ol>
+        </div>
         <div className="overflow-x-auto rounded-lg border border-border bg-zinc-950/80">
           <div className="border-b border-border px-3 py-1 font-mono text-[11px] text-muted-foreground">
             {languageName}

@@ -28,6 +28,12 @@ export const validParentheses: Problem = {
     "Given a string s containing only the characters ( ) { } [ ], decide whether it is valid.",
     "A string is valid when every open bracket is closed by the same type of bracket, in the correct order.",
   ],
+  keyIdeas: [
+    "The most recently opened bracket must be the first one closed, which is last in, first out, so use a stack.",
+    "Push every opening bracket.",
+    "On a closing bracket, the top of the stack must be its partner. Otherwise the string is invalid.",
+    "At the end, leftover openers mean the string is invalid.",
+  ],
   guide: {
     why: {
       intro: "This is the foundation for the Stack pattern. It tests:",

@@ -100,6 +100,8 @@ export type Problem = {
   examples?: { input: string; output: string; explanation?: string }[];
   constraints?: string[];
   followUp?: string;
+  /** The general idea, step by step; shown in the guide's HOW section. */
+  keyIdeas: string[];
   guide: Guide;
   complexity: { time: string; space: string };
   language: string;
