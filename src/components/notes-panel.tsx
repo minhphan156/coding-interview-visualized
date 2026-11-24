@@ -8,7 +8,13 @@ const SAVE_DELAY_MS = 500;
 
 type Status = "loading" | "saved" | "saving" | "error";
 
-const backupKey = (slug: string) => `leetcode-visualization:notes:${slug}`;
+const backupKey = (slug: string) => `coding-interview-visualized:notes:${slug}`;
+// Notes written before the rename live under the project's old name; read them once so they move into the file.
+const legacyBackupKey = (slug: string) => `leetcode-visualization:notes:${slug}`;
+
+function readBackup(slug: string): string {
+  return window.localStorage.getItem(backupKey(slug)) ?? window.localStorage.getItem(legacyBackupKey(slug)) ?? "";
+}
 
 async function saveToFile(slug: string, content: string, keepalive = false) {
   const res = await fetch(`/api/notes/${slug}`, {
@@ -55,7 +61,7 @@ export function NotesPanel({ slug, title }: { slug: string; title: string }) {
       })
       .then((fromFile) => {
         if (cancelled) return;
-        const backup = window.localStorage.getItem(backupKey(slug)) ?? "";
+        const backup = readBackup(slug);
         if (!fromFile && backup) {
           setNote(backup);
           pending.current = backup;
@@ -67,7 +73,7 @@ export function NotesPanel({ slug, title }: { slug: string; title: string }) {
       })
       .catch((e: Error) => {
         if (cancelled) return;
-        setNote(window.localStorage.getItem(backupKey(slug)) ?? "");
+        setNote(readBackup(slug));
         setStatus("error");
         setError(e.message);
       });
@@ -89,6 +95,7 @@ export function NotesPanel({ slug, title }: { slug: string; title: string }) {
     setNote(next);
     if (next) window.localStorage.setItem(backupKey(slug), next);
     else window.localStorage.removeItem(backupKey(slug));
+    window.localStorage.removeItem(legacyBackupKey(slug));
     pending.current = next;
     setStatus("saving");
     if (timer.current) clearTimeout(timer.current);

@@ -92,7 +92,6 @@ export type Problem = {
   number: number;
   title: string;
   difficulty: Difficulty;
-  url: string;
   pattern: string;
   tags: string[];
   description: string[];

@@ -13,7 +13,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/problems/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const problem = getProblem(slug);
-  return { title: problem ? `${problem.number}. ${problem.title} · LeetCode Visualization` : "Not found" };
+  return { title: problem ? `${problem.number}. ${problem.title} · Coding Interview Visualized` : "Not found" };
 }
 
 async function ProblemContent({ params }: { params: Params }) {

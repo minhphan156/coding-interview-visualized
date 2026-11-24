@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
       <div className="max-w-2xl">
-        <p className="font-mono text-xs tracking-widest text-violet-300 uppercase">LeetCode Visualization</p>
+        <p className="font-mono text-xs tracking-widest text-violet-300 uppercase">Coding Interview Visualized</p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
           Watch each solution run, one line at a time.
         </h1>

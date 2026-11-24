@@ -2,7 +2,6 @@
 
 import {
   ArrowLeft,
-  ExternalLink,
   Brain,
   ChevronFirst,
   ChevronLast,
@@ -382,9 +381,6 @@ export function Visualizer({ slug }: { slug: string }) {
             <span className="font-semibold">Follow up:</span> {problem.followUp}
           </p>
         )}
-        <a href={problem.url} target="_blank" rel="noreferrer" className="text-xs text-sky-300 hover:underline">
-          Open this problem on LeetCode →
-        </a>
       </TabsContent>
       <TabsContent value="notes" className="pt-1">
         <NotesPanel slug={problem.slug} title={`${problem.number}. ${problem.title}`} />
@@ -421,14 +417,6 @@ export function Visualizer({ slug }: { slug: string }) {
             </div>
           </div>
         </div>
-        <a
-          href={problem.url}
-          target="_blank"
-          rel="noreferrer"
-          className={cn(buttonVariants({ variant: "outline", size: "sm" }), "self-start sm:self-center")}
-        >
-          Open on LeetCode <ExternalLink />
-        </a>
       </header>
 
       {isDesktop ? (

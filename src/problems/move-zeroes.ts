@@ -16,7 +16,6 @@ export const moveZeroes: Problem = {
   number: 283,
   title: "Move Zeroes",
   difficulty: "Easy",
-  url: "https://leetcode.com/problems/move-zeroes/",
   pattern: "Two pointers (read / write)",
   tags: ["Array", "Two Pointers"],
   description: [

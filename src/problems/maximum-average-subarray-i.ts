@@ -19,7 +19,6 @@ export const maximumAverageSubarrayI: Problem = {
   number: 643,
   title: "Maximum Average Subarray I",
   difficulty: "Easy",
-  url: "https://leetcode.com/problems/maximum-average-subarray-i/",
   pattern: "Fixed-size sliding window",
   tags: ["Array", "Sliding Window"],
   description: [

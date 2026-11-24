@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LeetCode Visualization",
-  description: "Animated, line-by-line walkthroughs of LeetCode solutions for learning and memorization.",
+  title: "Coding Interview Visualized",
+  description: "Animated, line-by-line walkthroughs of coding interview solutions for learning and memorization.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
