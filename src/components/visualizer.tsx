@@ -386,6 +386,11 @@ export function Visualizer({ slug }: { slug: string }) {
             </ul>
           </div>
         )}
+        {problem.followUp && (
+          <p>
+            <span className="font-semibold">Follow up:</span> {problem.followUp}
+          </p>
+        )}
         <a href={problem.url} target="_blank" rel="noreferrer" className="text-xs text-sky-300 hover:underline">
           Open this problem on LeetCode →
         </a>

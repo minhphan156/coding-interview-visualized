@@ -16,6 +16,8 @@ export type ArrayViz = {
   pointers?: Pointer[];
   tones?: Record<number, Tone>;
   display?: "boxes" | "bars";
+  /** Stable identity per element, so moved elements slide to their new index. */
+  ids?: (string | number)[];
   /** Extra shading between two indices, e.g. the area of a container. */
   span?: { from: number; to: number; height?: number; tone?: Tone };
 };
@@ -87,6 +89,7 @@ export type Problem = {
   /** `explanation` is shown preformatted, so aligned diagrams keep their spacing. */
   examples?: { input: string; output: string; explanation?: string }[];
   constraints?: string[];
+  followUp?: string;
   keyIdeas: string[];
   complexity: { time: string; space: string };
   language: string;

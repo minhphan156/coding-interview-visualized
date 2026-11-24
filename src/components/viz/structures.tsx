@@ -32,6 +32,7 @@ function ArrayBoxes({ viz }: { viz: ArrayViz }) {
             <div key={i} className="flex w-11 flex-col items-center gap-1 sm:w-12">
               <span className="font-mono text-[10px] text-muted-foreground">{i}</span>
               <motion.div
+                layoutId={viz.ids ? `${viz.id}-cell-${viz.ids[i]}` : undefined}
                 initial={{ opacity: 0, scale: 0.5, y: -10 }}
                 animate={{ opacity: 1, y: 0, scale: tone === "active" || tone === "found" ? 1.08 : 1 }}
                 transition={spring}
