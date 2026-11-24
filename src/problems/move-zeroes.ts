@@ -29,12 +29,38 @@ export const moveZeroes: Problem = {
   ],
   constraints: ["1 <= nums.length <= 10⁴", "-2³¹ <= nums[i] <= 2³¹ - 1"],
   followUp: "Could you minimize the total number of operations done?",
-  keyIdeas: [
-    "Two pointers move left to right: read visits every element, and write marks where the next non-zero belongs.",
-    "Everything before write is the finished, in-order list of non-zeros. Everything from write up to read is zeros.",
-    "When read finds a non-zero, swap it with nums[write] (a zero, or itself), then move write forward.",
-    "Swapping instead of overwriting leaves the zeros at the end automatically, with one pass and no second fill loop.",
-  ],
+  guide: {
+    why: {
+      intro: "This is the foundation for the read/write (slow/fast) Two Pointers pattern: editing an array in place. It tests:",
+      points: [
+        "Can you modify an array in place with O(1) extra space?",
+        "Can you keep the relative order of the non-zeros stable?",
+        "Can you minimize the number of writes? (the follow-up)",
+      ],
+      analogy: "Think compacting a bookshelf: slide every book left to close the gaps, and the empty slots collect at the end.",
+    },
+    what: {
+      summary: "Push every 0 to the end, keep the non-zeros in their original order, and do it in place.",
+      examples: [
+        {
+          text: "[0,1,0,3,12] → [1,3,12,0,0]",
+          note: "1, 3, 12 keep their order",
+        },
+        {
+          text: "[0] → [0]",
+          note: "nothing to move",
+        },
+      ],
+    },
+    how: {
+      insight: "Key insight: read scans every element, and write marks where the next non-zero belongs. Swap each non-zero into nums[write], then write++. Because you swap instead of overwrite, the zeros drift to the end on their own, with no second pass to fill them in.",
+    },
+    pitfalls: [
+      "Building a new array or using filter() — the problem requires in-place.",
+      "Using splice() inside the loop to remove zeros — that's O(n²) and shifts indices under you, so you skip elements.",
+      "Overwriting nums[write] = nums[read] without a swap and then forgetting to fill the tail with 0s.",
+    ],
+  },
   complexity: { time: "O(n)", space: "O(1)" },
   language: "typescript",
   code,

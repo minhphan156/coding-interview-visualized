@@ -23,12 +23,37 @@ export const twoSum: Problem = {
     "Given an array of integers nums and an integer target, return the indices of the two numbers that add up to target.",
     "Each input has exactly one solution, and you may not use the same element twice.",
   ],
-  keyIdeas: [
-    "For each number, the partner you need is target − num.",
-    "Remember every number you've passed in a hash map of value → index.",
-    "Check the map before inserting, so an element never pairs with itself.",
-    "One pass and O(1) lookups give O(n) instead of the O(n²) brute force.",
-  ],
+  guide: {
+    why: {
+      intro: "This is the foundation for the Hash Map pattern: trading memory for speed. It tests:",
+      points: [
+        "Can you see that brute force checks every pair in O(n²)?",
+        "Can you turn \"find a partner\" into an O(1) lookup?",
+        "Can you avoid pairing an element with itself?",
+      ],
+      analogy: "Think of a party guest list: each arrival checks the list for the partner they need, then writes their own name down.",
+    },
+    what: {
+      summary: "Return the indices of the two numbers that add up to target.",
+      examples: [
+        {
+          text: "[2,7,11,15], target 9 → [0,1]",
+          note: "2 + 7 = 9",
+        },
+        {
+          text: "[3,2,4], target 6 → [1,2]",
+          note: "not [0,0]: 3 can't use itself",
+        },
+      ],
+    },
+    how: {
+      insight: "Key insight: for each num, the partner you need is target − num. Keep a map of value → index for everything you've seen, and check the map before inserting the current number.",
+    },
+    pitfalls: [
+      "Inserting before checking — with [3,2,4] and target 6, the 3 matches itself and you return [0,0].",
+      "Returning the values instead of their indices.",
+    ],
+  },
   complexity: { time: "O(n)", space: "O(n)" },
   language: "python",
   code,

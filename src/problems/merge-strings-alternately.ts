@@ -55,12 +55,39 @@ export const mergeStringsAlternately: Problem = {
     "1 <= word1.length, word2.length <= 100",
     "word1 and word2 consist of lowercase English letters.",
   ],
-  keyIdeas: [
-    "Walk one index i from 0 up to the length of the longer word.",
-    "At each i, take word1[i] first, then word2[i]. That gives the alternating order.",
-    "Guard each take with a bounds check (i < length). Once the shorter word runs out, its check fails and the longer word's leftovers are appended automatically.",
-    "No special case is needed for the tail: the loop over max(len1, len2) handles it.",
-  ],
+  guide: {
+    why: {
+      intro: "This is the foundation for the Two Pointers pattern. It tests:",
+      points: [
+        "Can you walk two inputs at the same time?",
+        "Can you handle unequal lengths without breaking?",
+        "Can you build a new string? Strings in TS are immutable, so you build, you don't edit.",
+      ],
+      analogy: "Think zipper / shuffling two decks one card at a time.",
+    },
+    what: {
+      summary: "Alternate chars starting with word1, then dump the leftover tail.",
+      examples: [
+        {
+          text: "abc + pqr = apbqcr",
+        },
+        {
+          text: "ab + pqrs = apbqrs",
+          note: "rs is the tail",
+        },
+        {
+          text: "abcd + pq = apbqcd",
+          note: "cd is the tail",
+        },
+      ],
+    },
+    how: {
+      insight: "Key insight: you don't need 2 pointers. Both advance together, so one index i is enough. Loop to the longer length, and only take a char if i is still in bounds for that string.",
+    },
+    pitfalls: [
+      "Looping only to the shorter length — you'll lose the tail and fail examples 2 and 3.",
+    ],
+  },
   complexity: { time: "O(m + n)", space: "O(m + n) for the output" },
   language: "typescript",
   code,

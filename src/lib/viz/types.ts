@@ -77,6 +77,16 @@ export type InputValues = Record<string, string>;
 
 export type Difficulty = "Easy" | "Medium" | "Hard";
 
+export type Guide = {
+  /** Why the problem exists: the skill it trains. */
+  why: { intro: string; points: string[]; analogy?: string };
+  /** What it's asking, in one line, plus worked examples. */
+  what: { summary: string; examples?: { text: string; note?: string }[] };
+  /** How to solve it: the key insight, shown above the solution code. */
+  how: { insight: string };
+  pitfalls: string[];
+};
+
 export type Problem = {
   slug: string;
   number: number;
@@ -90,7 +100,7 @@ export type Problem = {
   examples?: { input: string; output: string; explanation?: string }[];
   constraints?: string[];
   followUp?: string;
-  keyIdeas: string[];
+  guide: Guide;
   complexity: { time: string; space: string };
   language: string;
   code: string;

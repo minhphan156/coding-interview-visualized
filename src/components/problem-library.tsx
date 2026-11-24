@@ -78,7 +78,7 @@ export function ProblemLibrary() {
                   <DifficultyBadge difficulty={p.difficulty} className="shrink-0" />
                 </div>
                 <p className="mt-2 text-sm text-violet-200/90">{p.pattern}</p>
-                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.keyIdeas[0]}</p>
+                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.guide.what.summary}</p>
                 <div className="mt-auto flex items-end justify-between gap-2 pt-4">
                   <div className="flex flex-wrap gap-1">
                     {p.tags.map((t) => (

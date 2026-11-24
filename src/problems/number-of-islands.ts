@@ -41,12 +41,37 @@ export const numberOfIslands: Problem = {
     'Given an m × n grid of "1" (land) and "0" (water), return the number of islands.',
     "An island is land connected horizontally or vertically and surrounded by water. Everything outside the grid counts as water.",
   ],
-  keyIdeas: [
-    "Scan every cell. Each time you hit unvisited land, you've found a new island, so count it.",
-    "Immediately flood-fill (DFS) that island, marking every connected land cell as visited ('#').",
-    "Marked cells are never counted again, so each island is counted exactly once.",
-    "The DFS stops at edges, water, and already-visited cells.",
-  ],
+  guide: {
+    why: {
+      intro: "This is the gateway to graph traversal on a grid (DFS/BFS flood fill). It tests:",
+      points: [
+        "Can you treat a grid as a graph, with cells as nodes and 4 neighbors as edges?",
+        "Can you mark cells visited so nothing is counted twice?",
+        "Can you stay inside the grid's boundaries safely?",
+      ],
+      analogy: "Think of a paint-bucket tool: click one land cell and the whole island fills in.",
+    },
+    what: {
+      summary: "Count the groups of \"1\"s connected up, down, left or right.",
+      examples: [
+        {
+          text: "[[1,1,0],[0,1,0],[0,0,1]] → 2",
+          note: "diagonals don't connect",
+        },
+        {
+          text: "[[0,0],[0,0]] → 0",
+        },
+      ],
+    },
+    how: {
+      insight: "Key insight: scan every cell. Each unvisited \"1\" starts a new island, so count it, then DFS from it to sink the whole island to \"#\" so it's never counted again.",
+    },
+    pitfalls: [
+      "Recursing before marking the cell — neighbors bounce back and forth forever.",
+      "Counting diagonal neighbors — only the 4 directions connect.",
+      "Reading grid[r][c] before the bounds check — an out-of-range index.",
+    ],
+  },
   complexity: { time: "O(m · n)", space: "O(m · n) recursion in the worst case" },
   language: "python",
   code,

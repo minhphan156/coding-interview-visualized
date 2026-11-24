@@ -28,12 +28,40 @@ export const validParentheses: Problem = {
     "Given a string s containing only the characters ( ) { } [ ], decide whether it is valid.",
     "A string is valid when every open bracket is closed by the same type of bracket, in the correct order.",
   ],
-  keyIdeas: [
-    "The most recently opened bracket must be the first one closed, which is last in, first out, so use a stack.",
-    "Push every opening bracket.",
-    "On a closing bracket, the top of the stack must be its partner. Otherwise the string is invalid.",
-    "At the end, leftover openers mean the string is invalid.",
-  ],
+  guide: {
+    why: {
+      intro: "This is the foundation for the Stack pattern. It tests:",
+      points: [
+        "Can you recognize last-opened, first-closed (LIFO) order?",
+        "Can you handle three bracket types with one lookup map?",
+        "Can you catch every failure: the wrong type, a closer with nothing open, and leftover openers?",
+      ],
+      analogy: "Think nesting boxes: you have to close the innermost box before the one around it.",
+    },
+    what: {
+      summary: "Decide whether every bracket is closed by the same type, in the right order.",
+      examples: [
+        {
+          text: "{[()()]} → true",
+        },
+        {
+          text: "([)] → false",
+          note: "] arrives while ( is still open",
+        },
+        {
+          text: "(([] → false",
+          note: "two ( are never closed",
+        },
+      ],
+    },
+    how: {
+      insight: "Key insight: push every opener. On a closer, the top of the stack must be its partner, so pop it, or fail immediately. At the end, the stack must be empty.",
+    },
+    pitfalls: [
+      "Skipping the final empty-stack check — \"((\" would wrongly pass.",
+      "Reading the top of an empty stack — a string starting with \")\" must return false, not crash.",
+    ],
+  },
   complexity: { time: "O(n)", space: "O(n)" },
   language: "python",
   code,

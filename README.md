@@ -9,7 +9,7 @@ Each problem page shows:
 - **A plain-English message** for every step that explains what just happened and why.
 - **Playback controls**: play/pause, step forward and back, a scrubber, and speeds from 0.5× to 4×. Keyboard: `space` plays or pauses, `←` and `→` step, and `r` toggles recall mode.
 - **Recall mode**: code lines stay blurred until the walkthrough reaches them, so you can practise saying the next line from memory.
-- **Key ideas, pattern and complexity**, the things worth remembering about each problem.
+- **A study guide** for each problem: WHY it exists, WHAT it asks, HOW to solve it (with the code), its COMPLEXITY, and the PITFALL to avoid.
 - **Custom input**: try your own test cases or one of the presets.
 
 ## Running locally
@@ -32,7 +32,7 @@ Each problem is one file in `src/problems/`, registered in `src/problems/index.t
 A problem (the `Problem` type in `src/lib/viz/types.ts`) contains:
 
 - metadata: `number`, `title`, `difficulty`, `pattern`, `tags`, `url` (the LeetCode link), `description`, and optionally `examples` and `constraints` (the full statement as pasted)
-- `keyIdeas` and `complexity`, used for memorization
+- `guide` (why, what, how and pitfalls) and `complexity`, shown on the Guide tab
 - `code`, the solution exactly as you want to learn it (Python or TypeScript)
 - `inputs` and `presets`, the editable test cases
 - `trace(input)`, which re-implements the solution and records a `Frame` at each step. A frame holds the 1-based code line, a message, and a snapshot of the data structures to draw (`array`, `map`, `stack`, `grid` or `vars`).

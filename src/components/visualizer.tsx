@@ -26,6 +26,7 @@ import { CodePanel } from "@/components/viz/code-panel";
 import { StructureView } from "@/components/viz/structures";
 import { DifficultyBadge } from "@/components/difficulty-badge";
 import { ResizableWorkspace, useIsDesktop } from "@/components/resizable-layout";
+import { StudyGuide } from "@/components/study-guide";
 import { cn } from "@/lib/utils";
 import type { Frame, InputValues, Problem, Viz } from "@/lib/viz/types";
 import { getProblem } from "@/problems";
@@ -300,7 +301,7 @@ export function Visualizer({ slug }: { slug: string }) {
     <Tabs defaultValue="code" className={cn("flex-1 rounded-xl border border-border bg-card/40 p-3", isDesktop && "min-h-0 overflow-y-auto")}>
       <TabsList className="w-full">
         <TabsTrigger value="code">Code</TabsTrigger>
-        <TabsTrigger value="ideas">Key ideas</TabsTrigger>
+        <TabsTrigger value="guide">Guide</TabsTrigger>
         <TabsTrigger value="problem">Problem</TabsTrigger>
       </TabsList>
       <TabsContent value="code" className="flex flex-col gap-3 pt-1">
@@ -336,20 +337,8 @@ export function Visualizer({ slug }: { slug: string }) {
           </div>
         </div>
       </TabsContent>
-      <TabsContent value="ideas" className="pt-1">
-        <p className="mb-3 text-xs text-muted-foreground">
-          Pattern: <span className="text-violet-200">{problem.pattern}</span>
-        </p>
-        <ol className="flex flex-col gap-2">
-          {problem.keyIdeas.map((idea, i) => (
-            <li key={i} className="flex gap-3 rounded-lg border border-border bg-background/40 p-3 leading-relaxed">
-              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-violet-400/15 font-mono text-xs text-violet-200">
-                {i + 1}
-              </span>
-              {idea}
-            </li>
-          ))}
-        </ol>
+      <TabsContent value="guide" className="pt-1">
+        <StudyGuide problem={problem} languageName={LANGUAGE_NAMES[problem.language] ?? problem.language} />
       </TabsContent>
       <TabsContent value="problem" className="flex flex-col gap-3 pt-1 leading-relaxed">
         {problem.description.map((p, i) => (

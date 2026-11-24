@@ -26,12 +26,36 @@ export const containerWithMostWater: Problem = {
     "You are given n vertical lines, where line i has height height[i].",
     "Pick two lines that, together with the x-axis, form a container holding the most water, and return that maximum amount.",
   ],
-  keyIdeas: [
-    "Start with the widest container: one pointer at each end.",
-    "Water level = the shorter line, so area = width × min(height[left], height[right]).",
-    "Moving the taller line can never help: width shrinks and the level is still capped by the shorter line.",
-    "So always move the shorter side inward and hope for a taller line.",
-  ],
+  guide: {
+    why: {
+      intro: "This is the showcase for the opposite-ends Two Pointers pattern, backed by a greedy argument. It tests:",
+      points: [
+        "Can you write the area formula: width × the shorter height?",
+        "Can you justify which pointer to move?",
+        "Can you beat checking all O(n²) pairs?",
+      ],
+      analogy: "Think squeezing an accordion from both ends, always letting go of the weaker side.",
+    },
+    what: {
+      summary: "Pick two lines that hold the most water between them and return that area.",
+      examples: [
+        {
+          text: "[1,8,6,2,5,4,8,3,7] → 49",
+          note: "lines 1 and 8: width 7 × height 7",
+        },
+        {
+          text: "[1,1] → 1",
+        },
+      ],
+    },
+    how: {
+      insight: "Key insight: start with the widest container. The water level is capped by the shorter line, so moving the taller pointer can only shrink the width without raising the cap. Always move the shorter one inward.",
+    },
+    pitfalls: [
+      "Moving the taller pointer (or both) — you skip containers that might be the answer.",
+      "Using the taller height in the area — the water spills over the shorter line.",
+    ],
+  },
   complexity: { time: "O(n)", space: "O(1)" },
   language: "python",
   code,

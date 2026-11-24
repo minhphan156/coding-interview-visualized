@@ -19,7 +19,7 @@ const BUILTINS = new Set([
 
 const TOKEN = /(#.*$|\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)|(\s+)|(.)/g;
 
-function highlight(line: string) {
+export function highlight(line: string) {
   const parts: React.ReactNode[] = [];
   let m: RegExpExecArray | null;
   let i = 0;
