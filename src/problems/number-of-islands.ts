@@ -34,6 +34,7 @@ export const numberOfIslands: Problem = {
   number: 200,
   title: "Number of Islands",
   difficulty: "Medium",
+  url: "https://leetcode.com/problems/number-of-islands/",
   pattern: "Grid DFS flood fill",
   tags: ["Matrix", "Depth-First Search", "Union Find"],
   description: [

@@ -24,6 +24,7 @@ export const mergeStringsAlternately: Problem = {
   number: 1768,
   title: "Merge Strings Alternately",
   difficulty: "Easy",
+  url: "https://leetcode.com/problems/merge-strings-alternately/",
   pattern: "Two pointers (walk both strings)",
   tags: ["Two Pointers", "String"],
   description: [

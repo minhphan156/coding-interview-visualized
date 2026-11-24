@@ -21,6 +21,7 @@ export const validParentheses: Problem = {
   number: 20,
   title: "Valid Parentheses",
   difficulty: "Easy",
+  url: "https://leetcode.com/problems/valid-parentheses/",
   pattern: "Stack matching",
   tags: ["String", "Stack"],
   description: [

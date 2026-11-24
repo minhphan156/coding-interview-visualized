@@ -16,6 +16,7 @@ export const twoSum: Problem = {
   number: 1,
   title: "Two Sum",
   difficulty: "Easy",
+  url: "https://leetcode.com/problems/two-sum/",
   pattern: "Hash map lookup",
   tags: ["Array", "Hash Table"],
   description: [

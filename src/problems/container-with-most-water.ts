@@ -19,6 +19,7 @@ export const containerWithMostWater: Problem = {
   number: 11,
   title: "Container With Most Water",
   difficulty: "Medium",
+  url: "https://leetcode.com/problems/container-with-most-water/",
   pattern: "Two pointers (shrink from both ends)",
   tags: ["Array", "Two Pointers", "Greedy"],
   description: [
