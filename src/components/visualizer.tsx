@@ -29,7 +29,7 @@ import { NotesPanel } from "@/components/notes-panel";
 import { StudyGuide } from "@/components/study-guide";
 import { cn } from "@/lib/utils";
 import type { Frame, InputValues, Problem, Viz } from "@/lib/viz/types";
-import { getProblem } from "@/problems";
+import { getProblem, problemHeading } from "@/problems";
 
 const SPEEDS = [0.5, 1, 2, 4];
 const LANGUAGE_NAMES: Record<string, string> = { python: "Python 3", typescript: "TypeScript" };
@@ -383,7 +383,7 @@ export function Visualizer({ slug }: { slug: string }) {
         )}
       </TabsContent>
       <TabsContent value="notes" className="pt-1">
-        <NotesPanel slug={problem.slug} title={`${problem.number}. ${problem.title}`} />
+        <NotesPanel slug={problem.slug} title={problemHeading(problem)} />
       </TabsContent>
     </Tabs>
   </aside>
@@ -402,7 +402,8 @@ export function Visualizer({ slug }: { slug: string }) {
           </Link>
           <div>
             <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
-              <span className="text-muted-foreground">{problem.number}.</span> {problem.title}
+              {problem.number !== undefined && <span className="text-muted-foreground">{problem.number}.</span>}{" "}
+              {problem.title}
             </h1>
             <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
               <DifficultyBadge difficulty={problem.difficulty} />

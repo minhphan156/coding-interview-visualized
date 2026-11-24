@@ -89,7 +89,8 @@ export type Guide = {
 
 export type Problem = {
   slug: string;
-  number: number;
+  /** Omit for topics that aren't numbered problems, e.g. system design building blocks. */
+  number?: number;
   title: string;
   difficulty: Difficulty;
   pattern: string;

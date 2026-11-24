@@ -29,6 +29,15 @@ export function expectInt(value: unknown, name: string): number {
   return value as number;
 }
 
+export function expectTimestamps(value: unknown, name = "times", max = 20): number[] {
+  const times = expectIntArray(value, name, max);
+  if (times.some((t) => t < 0 || t > 999)) throw new Error("Each timestamp must be between 0 and 999 seconds.");
+  if (times.some((t, i) => i > 0 && t < times[i - 1])) {
+    throw new Error(`${name} must be in order (non-decreasing), like requests arriving over time.`);
+  }
+  return times;
+}
+
 export function expectString(value: unknown, name: string, max = 60): string {
   if (typeof value !== "string") throw new Error(`${name} must be text.`);
   if (value.length > max) throw new Error(`${name} can have at most ${max} characters here.`);

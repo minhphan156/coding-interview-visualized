@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Visualizer } from "@/components/visualizer";
-import { getProblem, problems } from "@/problems";
+import { getProblem, problemHeading, problems } from "@/problems";
 
 type Params = PageProps<"/problems/[slug]">["params"];
 
@@ -13,7 +13,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/problems/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const problem = getProblem(slug);
-  return { title: problem ? `${problem.number}. ${problem.title} · Coding Interview Visualized` : "Not found" };
+  return { title: problem ? `${problemHeading(problem)} · Coding Interview Visualized` : "Not found" };
 }
 
 async function ProblemContent({ params }: { params: Params }) {

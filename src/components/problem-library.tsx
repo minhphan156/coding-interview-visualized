@@ -22,7 +22,7 @@ export function ProblemLibrary() {
     return problems.filter((p) => {
       if (difficulty !== "All" && p.difficulty !== difficulty) return false;
       if (!q) return true;
-      return [p.title, String(p.number), p.pattern, ...p.tags].some((s) => s.toLowerCase().includes(q));
+      return [p.title, String(p.number ?? ""), p.pattern, ...p.tags].some((s) => s.toLowerCase().includes(q));
     });
   }, [query, difficulty]);
 
@@ -73,7 +73,8 @@ export function ProblemLibrary() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <h2 className="font-semibold leading-snug">
-                    <span className="text-muted-foreground">{p.number}.</span> {p.title}
+                    {p.number !== undefined && <span className="text-muted-foreground">{p.number}.</span>}{" "}
+                    {p.title}
                   </h2>
                   <DifficultyBadge difficulty={p.difficulty} className="shrink-0" />
                 </div>
