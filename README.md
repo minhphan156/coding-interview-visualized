@@ -11,7 +11,7 @@ Each problem page shows:
 - **Recall mode**: code lines stay blurred until the walkthrough reaches them, so you can practise saying the next line from memory.
 - **A study guide** for each problem: WHY it exists, WHAT it asks, HOW to solve it (with the code), its COMPLEXITY, and the PITFALL to avoid.
 - **Custom input**: try your own test cases or one of the presets.
-- **Notes**: a Notes tab per problem for your own notes, saved in your browser as you type.
+- **Notes**: a Notes tab per problem for your own notes. They save as you type to `notes/<problem>.md` in the project folder, so you can commit them with the rest of the repo.
 
 ## Running locally
 
