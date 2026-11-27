@@ -4,6 +4,7 @@ import { maximumAverageSubarrayI } from "./maximum-average-subarray-i";
 import { mergeStringsAlternately } from "./merge-strings-alternately";
 import { moveZeroes } from "./move-zeroes";
 import { numberOfIslands } from "./number-of-islands";
+import { rateLimiter } from "./rate-limiter";
 import { slidingWindowRateLimiter } from "./sliding-window-rate-limiter";
 import { tokenBucketRateLimiter } from "./token-bucket-rate-limiter";
 import { twoSum } from "./two-sum";
@@ -19,6 +20,7 @@ export const problems: Problem[] = [
   maximumAverageSubarrayI,
   tokenBucketRateLimiter,
   slidingWindowRateLimiter,
+  rateLimiter,
 ].sort((a, b) => (a.number ?? Infinity) - (b.number ?? Infinity));
 
 export function getProblem(slug: string): Problem | undefined {
