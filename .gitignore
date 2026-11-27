@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# study progress (done checks) stays on this machine
+/progress.json
+/progress.json.tmp
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
