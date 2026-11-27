@@ -5,8 +5,6 @@ import { mergeStringsAlternately } from "./merge-strings-alternately";
 import { moveZeroes } from "./move-zeroes";
 import { numberOfIslands } from "./number-of-islands";
 import { rateLimiter } from "./rate-limiter";
-import { slidingWindowRateLimiter } from "./sliding-window-rate-limiter";
-import { tokenBucketRateLimiter } from "./token-bucket-rate-limiter";
 import { twoSum } from "./two-sum";
 import { validParentheses } from "./valid-parentheses";
 
@@ -18,8 +16,6 @@ export const problems: Problem[] = [
   mergeStringsAlternately,
   moveZeroes,
   maximumAverageSubarrayI,
-  tokenBucketRateLimiter,
-  slidingWindowRateLimiter,
   rateLimiter,
 ].sort((a, b) => (a.number ?? Infinity) - (b.number ?? Infinity));
 
