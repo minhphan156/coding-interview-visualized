@@ -298,14 +298,14 @@ export function Visualizer({ slug }: { slug: string }) {
 
   const sidePanel = (
   <aside className={cn("flex min-w-0 flex-col", isDesktop && "h-full")}>
-    <Tabs defaultValue="code" className={cn("flex-1 rounded-xl border border-border bg-card/40 p-3", isDesktop && "min-h-0 overflow-y-auto")}>
+    <Tabs defaultValue="code" className={cn("flex-1 rounded-xl border border-border bg-card/40 p-3", isDesktop && "min-h-0 overflow-hidden")}>
       <TabsList className="w-full">
         <TabsTrigger value="code">Code</TabsTrigger>
         <TabsTrigger value="guide">Guide</TabsTrigger>
         <TabsTrigger value="problem">Problem</TabsTrigger>
         <TabsTrigger value="notes">Notes</TabsTrigger>
       </TabsList>
-      <TabsContent value="code" className="flex flex-col gap-3 pt-1">
+      <TabsContent value="code" className={cn("flex flex-col gap-3 pt-1", isDesktop && "min-h-0")}>
         <div className="flex items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">
             {LANGUAGE_NAMES[problem.language] ?? problem.language}
@@ -331,7 +331,7 @@ export function Visualizer({ slug }: { slug: string }) {
           activeLine={frame?.line ?? 0}
           recallMode={recallMode}
           revealedLines={revealedLines}
-          className={cn(!isDesktop && "max-h-[70dvh] overflow-y-auto")}
+          className={cn("overflow-y-auto", isDesktop ? "min-h-0 flex-1" : "max-h-[70dvh]")}
         />
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="rounded-lg border border-border px-3 py-2">
@@ -344,10 +344,10 @@ export function Visualizer({ slug }: { slug: string }) {
           </div>
         </div>
       </TabsContent>
-      <TabsContent value="guide" className="pt-1">
+      <TabsContent value="guide" className={cn("pt-1", isDesktop && "min-h-0 overflow-y-auto")}>
         <StudyGuide problem={problem} languageName={LANGUAGE_NAMES[problem.language] ?? problem.language} />
       </TabsContent>
-      <TabsContent value="problem" className="flex flex-col gap-3 pt-1 leading-relaxed">
+      <TabsContent value="problem" className={cn("flex flex-col gap-3 pt-1 leading-relaxed", isDesktop && "min-h-0 overflow-y-auto")}>
         {problem.description.map((p, i) => (
           <p key={i}>{p}</p>
         ))}
@@ -388,7 +388,7 @@ export function Visualizer({ slug }: { slug: string }) {
           </p>
         )}
       </TabsContent>
-      <TabsContent value="notes" className="pt-1">
+      <TabsContent value="notes" className={cn("pt-1", isDesktop && "min-h-0 overflow-y-auto")}>
         <NotesPanel slug={problem.slug} title={problemHeading(problem)} />
       </TabsContent>
     </Tabs>
@@ -396,7 +396,7 @@ export function Visualizer({ slug }: { slug: string }) {
   );
 
   return (
-    <div className={cn("mx-auto flex w-full flex-1 flex-col gap-4 px-4 py-5 sm:px-6", isDesktop ? "h-dvh min-h-0 gap-3 py-4" : "max-w-[1400px]")}>
+    <div className={cn("mx-auto flex w-full flex-1 flex-col gap-4 px-4 py-5 sm:px-6", isDesktop ? "h-dvh min-h-0 flex-none gap-3 py-4" : "max-w-[1400px]")}>
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
           <Link
