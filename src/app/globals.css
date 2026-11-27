@@ -128,3 +128,75 @@
     @apply font-sans;
   }
 }
+
+@layer components {
+  .markdown {
+    @apply text-sm leading-relaxed text-zinc-200;
+  }
+  .markdown > :first-child {
+    @apply mt-0;
+  }
+  .markdown h1 {
+    @apply mt-5 mb-2 text-xl font-semibold tracking-tight text-foreground;
+  }
+  .markdown h2 {
+    @apply mt-5 mb-2 text-lg font-semibold tracking-tight text-foreground;
+  }
+  .markdown h3 {
+    @apply mt-4 mb-1.5 text-base font-semibold text-foreground;
+  }
+  .markdown h4 {
+    @apply mt-3 mb-1 text-sm font-semibold text-foreground;
+  }
+  .markdown p {
+    @apply my-2;
+  }
+  .markdown a {
+    @apply text-violet-300 underline underline-offset-2 hover:text-violet-200;
+  }
+  .markdown strong {
+    @apply font-semibold text-foreground;
+  }
+  .markdown ul {
+    @apply my-2 list-disc space-y-1 pl-5;
+  }
+  .markdown ol {
+    @apply my-2 list-decimal space-y-1 pl-5;
+  }
+  .markdown li::marker {
+    @apply text-muted-foreground;
+  }
+  .markdown ul.contains-task-list {
+    @apply list-none pl-1;
+  }
+  .markdown li.task-list-item input {
+    @apply mr-2 accent-emerald-400;
+  }
+  .markdown blockquote {
+    @apply my-3 border-l-2 border-violet-400/60 pl-3 text-muted-foreground;
+  }
+  .markdown code {
+    @apply rounded bg-muted px-1 py-0.5 font-mono text-[12px] text-violet-100;
+  }
+  .markdown pre {
+    @apply my-3 overflow-x-auto rounded-lg border border-border bg-zinc-950/80 p-3 font-mono text-[12px] leading-relaxed;
+  }
+  .markdown pre code {
+    @apply bg-transparent p-0 text-zinc-100;
+  }
+  .markdown hr {
+    @apply my-4 border-border;
+  }
+  .markdown table {
+    @apply my-3 block w-full overflow-x-auto border-collapse text-left text-[13px];
+  }
+  .markdown th {
+    @apply border border-border bg-muted/50 px-2 py-1 font-semibold;
+  }
+  .markdown td {
+    @apply border border-border px-2 py-1;
+  }
+  .markdown .katex-display {
+    @apply my-3 overflow-x-auto overflow-y-hidden py-1;
+  }
+}

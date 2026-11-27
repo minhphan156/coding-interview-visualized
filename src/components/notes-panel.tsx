@@ -1,8 +1,10 @@
 "use client";
 
-import { Check, CircleAlert, LoaderCircle, Trash2 } from "lucide-react";
+import { Check, CircleAlert, Eye, LoaderCircle, Pencil, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { MarkdownView } from "@/components/markdown-view";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const SAVE_DELAY_MS = 500;
 
@@ -30,6 +32,12 @@ export function NotesPanel({ slug, title }: { slug: string; title: string }) {
   const [note, setNote] = useState("");
   const [status, setStatus] = useState<Status>("loading");
   const [error, setError] = useState<string | null>(null);
+  const [mode, setModeState] = useState<"write" | "preview">("write");
+  const [focusEditor, setFocusEditor] = useState(false);
+  const setMode = (m: "write" | "preview") => {
+    setFocusEditor(true);
+    setModeState(m);
+  };
   const pending = useRef<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -70,6 +78,7 @@ export function NotesPanel({ slug, title }: { slug: string; title: string }) {
           setNote(fromFile);
           setStatus("saved");
         }
+        if ((fromFile || backup).trim()) setModeState("preview");
       })
       .catch((e: Error) => {
         if (cancelled) return;
@@ -123,15 +132,47 @@ export function NotesPanel({ slug, title }: { slug: string; title: string }) {
           Clear
         </Button>
       </div>
-      <textarea
-        value={note}
-        onChange={(e) => update(e.target.value)}
-        disabled={status === "loading"}
-        placeholder={status === "loading" ? "Loading your notes…" : "Write it in your own words…\n\n• The trick I keep forgetting\n• Edge cases to check\n• How I'd explain it in an interview"}
-        spellCheck
-        aria-label={`Notes for ${title}`}
-        className="min-h-80 flex-1 resize-y rounded-lg border border-input bg-zinc-950/60 p-3 font-mono text-[13px] leading-relaxed text-zinc-100 outline-none placeholder:text-muted-foreground/50 focus:border-ring focus:ring-3 focus:ring-ring/40 disabled:opacity-60"
-      />
+      <div className="flex items-center gap-1 self-start rounded-lg bg-muted/50 p-0.5" role="group" aria-label="Notes view">
+        {(["write", "preview"] as const).map((m) => (
+          <button
+            key={m}
+            type="button"
+            onClick={() => setMode(m)}
+            aria-pressed={mode === m}
+            className={cn(
+              "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs capitalize transition-colors",
+              mode === m ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {m === "write" ? <Pencil className="size-3" /> : <Eye className="size-3" />}
+            {m}
+          </button>
+        ))}
+      </div>
+      {mode === "write" ? (
+        <textarea
+          value={note}
+          onChange={(e) => update(e.target.value)}
+          disabled={status === "loading"}
+          placeholder={status === "loading" ? "Loading your notes…" : "Write it in your own words… Markdown works.\n\n- The trick I keep forgetting\n- Edge cases to check\n- How I'd explain it in an interview"}
+          spellCheck
+          autoFocus={focusEditor}
+          aria-label={`Notes for ${title}`}
+          className="min-h-80 flex-1 resize-y rounded-lg border border-input bg-zinc-950/60 p-3 font-mono text-[13px] leading-relaxed text-zinc-100 outline-none placeholder:text-muted-foreground/50 focus:border-ring focus:ring-3 focus:ring-ring/40 disabled:opacity-60"
+        />
+      ) : (
+        <div
+          onDoubleClick={() => setMode("write")}
+          title="Double-click to edit"
+          className="min-h-80 flex-1 overflow-y-auto rounded-lg border border-input bg-zinc-950/60 p-4"
+        >
+          {note.trim() ? (
+            <MarkdownView>{note}</MarkdownView>
+          ) : (
+            <p className="text-sm text-muted-foreground/60">Nothing to preview yet. Switch to Write to add notes.</p>
+          )}
+        </div>
+      )}
       <div className="flex items-center justify-between gap-2 font-mono text-[11px] text-muted-foreground">
         <span className="flex items-center gap-1" aria-live="polite">
           {status === "loading" && (
