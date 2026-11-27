@@ -144,11 +144,11 @@ export class RateLimiter {
     if (refilled < 1) {
       // Remember the partial refill so the next call doesn't count this elapsed time again.
       this.state.set(key, { tokens: refilled, updatedAt: now });
-      // Milliseconds until the bucket reaches 1 token.
+      // Milliseconds until the bucket reaches 1 token, truncated toward 0 to a whole number.
       // A rate of 0 never refills, so report the largest finite wait the tests accept (2^63 - 1).
       const resetAfterMs =
         refillRate > 0
-          ? Math.ceil(((1 - refilled) / refillRate) * 1000)
+          ? Math.floor(((1 - refilled) / refillRate) * 1000)
           : 9223372036854775807;
       // Reject the request.
       return {
@@ -302,34 +302,55 @@ export const rateLimiter: Problem = {
   pattern: "Hash map of per-key state (sliding window log + token bucket)",
   tags: ["System Design", "Rate Limiting", "Hash Map", "Sliding Window"],
   description: [
-    "Build an in-memory rate limiter that guards an LLM API gateway. It supports two policies, chosen when the limiter is created: new RateLimiter(\"policy_a\") or new RateLimiter(\"policy_b\"). Any other strategy throws a RangeError.",
-    "check(clientId, endpoint, limit, windowMs, capacity, refillRate) is called once per request and returns { allowed, remaining, resetAfterMs }. Every clientId + endpoint pair is limited separately.",
-    "policy_a is a sliding window: allow at most limit requests in any rolling windowMs milliseconds. policy_b is a token bucket: each pair starts with capacity tokens, refills refillRate tokens per second up to capacity, and each allowed request spends one token. Each policy ignores the other policy's two arguments.",
-    "remaining must be a safe integer and resetAfterMs a finite integer. stats() returns { strategy, totalAllowed, totalRejected, activeKeys }.",
-    'In this visualizer, refillRate is tokens per second and each request is [timeMs, "clientId", "endpoint"]; timeMs stands in for Date.now().',
+    "You are adding rate limiting to an LLM API gateway. Several clients share endpoints such as /v1/chat and /v1/complete, so the gateway needs to stop one client from taking all of the available capacity.",
+    "Implement the RateLimiter class in src/rate_limiter.ts. The provided HTTP server calls it before accepting a request, and handles concurrent requests on one Node.js event loop. Keep each check(...) call synchronous: it must return a decision directly, without a Promise or await. You do not need worker threads or shared memory.",
+    "Build an in-memory limiter with two policies; configuration decides which one is active at runtime. Each check receives clientId, endpoint and the policy parameters, and returns { allowed, remaining, resetAfterMs }. The return types in src/types.ts are fixed.",
+    "allowed is true when the request can proceed. A rejected request must not consume capacity or appear in the history of accepted requests.",
+    "remaining is measured after the current decision. If the request is accepted, it is how many more requests for the same (clientId, endpoint) can be accepted immediately. Only capacity available right now counts. If the request is rejected, remaining is 0.",
+    "resetAfterMs is a non-negative integer in milliseconds; truncate any fractional millisecond toward 0. For Policy A it is the time until the oldest currently counted accepted request stops being counted. For Policy B it is 0 when the request is accepted, and otherwise the time until one full token becomes available.",
+    "check(...) takes no time argument: the time of a request is the moment check(...) is called, so read the clock inside the limiter. When Policy A is active it receives limit >= 1 and windowMs >= 1; when Policy B is active it receives capacity >= 1 and refillRate >= 0. The parameters the active policy doesn't use may hold any value.",
+    "Policy A allows at most limit requests per (clientId, endpoint) in the latest windowMs milliseconds. Only accepted requests inside the most recent window count, expired ones are removed before evaluating the current request, and an accepted request joins the window. remaining = limit − counted requests after the decision. An accepted request can therefore have a positive resetAfterMs.",
+    "Policy B gives each (clientId, endpoint) its own bucket, which starts with capacity tokens. Every accepted request spends exactly one token. Tokens refill continuously at refillRate per second, but the bucket never holds more than capacity. The budget may be fractional; don't round it before deciding. If refillRate is 0 and the request is rejected, resetAfterMs can be any non-negative integer, since capacity will not recover.",
+    "All numeric decision fields must be finite integers. stats() returns { strategy, totalAllowed, totalRejected, activeKeys }; its counters start at zero, and activeKeys counts tracked (clientId, endpoint) pairs. Complete REFLECTION.essay with your explanation of concurrency and multi-instance deployment.",
+    'In this visualizer, each request is [timeMs, "clientId", "endpoint"], and timeMs stands in for Date.now(). The presets are the examples below.',
   ],
   examples: [
     {
-      input:
-        'const limiter = new RateLimiter("policy_a");\n[1, 2, 3].map(() => limiter.check("alice", "/v1/chat", 2, 500, 0, 0));',
-      output: "allowed: [true, true, false]\nremaining: [1, 0, 0]",
+      input: "Policy A: limit = 2, windowMs = 10000\nrequests at 0 ms, 3000 ms, 3500 ms",
+      output: "0 ms    -> (true,  1, ~10000)\n3000 ms -> (true,  0, ~7000)\n3500 ms -> (false, 0, ~6500)",
       explanation:
-        "The limit is 2 requests per 500 ms.\nThe third call finds 2 timestamps in the window, so it is rejected,\nwith resetAfterMs ≈ 500 (when the first one expires).",
+        "At 0 ms, the first accepted request is the oldest counted one. It expires at 10000 ms.\nAt 3000 ms, the second is accepted. No slots remain; the oldest still expires at 10000 ms.\nAt 3500 ms, the window is full, so it's rejected. The oldest expires in ~6500 ms.",
     },
     {
-      input:
-        'const limiter = new RateLimiter("policy_b");\n[1, 2, 3, 4].map(() => limiter.check("alice", "/v1/chat", 0, 0, 3, 0.5));',
-      output: "allowed: [true, true, true, false]\nremaining: [2, 1, 0, 0]\nresetAfterMs: [0, 0, 0, 2000]",
+      input: "Policy A: limit = 2, windowMs = 120\nrequests at 0 ms, 0 ms, 140 ms",
+      output: "140 ms -> (true, 1, ~120)",
       explanation:
-        "A new bucket starts full with 3 tokens, so a burst of 3 is allowed.\nThe 4th finds 0 tokens. At 0.5 tokens/s, one token takes 2000 ms.",
+        "At 140 ms, neither earlier request is still in the window.\nThe new request is accepted and is now the only timestamp being counted.",
+    },
+    {
+      input: "Policy B: capacity = 3, refillRate = 0.5\nfour requests on a new bucket",
+      output: "request 1 -> (true,  2, 0)\nrequest 2 -> (true,  1, 0)\nrequest 3 -> (true,  0, 0)\nrequest 4 -> (false, 0, ~2000)",
+      explanation:
+        "A new bucket starts full. The first three requests empty it.\nAt 0.5 tokens per second, the fourth has to wait about 2 seconds for a complete token.",
+    },
+    {
+      input: "Policy B: capacity = 3, refillRate = 0.5\nempty bucket, next request 1200 ms later",
+      output: "(false, 0, ~800)",
+      explanation:
+        "0.5 × 1.2 = 0.6  =>  budget = 0.6, below 1 unit, so it's rejected.\nTo reach 1 full token: 1 − 0.6 = 0.4 units, and 0.4 ÷ 0.5 = 0.8 s = 800 ms.",
     },
   ],
   constraints: [
-    "Each clientId + endpoint pair has its own state.",
-    "Allowed token-bucket decisions report resetAfterMs = 0.",
-    "resetAfterMs must be finite, even when refillRate is 0.",
-    "Rejected requests don't consume quota.",
+    "State is isolated per (clientId, endpoint).",
+    "check(...) is synchronous and reads the clock itself.",
+    "Policy A: limit >= 1, windowMs >= 1.",
+    "Policy B: capacity >= 1, refillRate >= 0.",
+    "remaining and resetAfterMs are finite, non-negative integers.",
+    "Rejected requests return remaining = 0 and don't consume capacity.",
+    "Use only the TypeScript / Node.js 24 standard library.",
   ],
+  followUp:
+    "REFLECTION.essay: why is shared state safe under concurrent requests on one event loop, and what changes when the gateway runs as several instances?",
   keyIdeas: [
     "Keep one Map from a key to that pair's state. Build the key as clientId + \"\\u0000\" + endpoint so different pairs can never collide.",
     "Policy A (sliding window log): store the timestamps of allowed requests. On each call, drop timestamps at or before now − windowMs, then allow only if fewer than limit remain.",
@@ -363,6 +384,7 @@ export const rateLimiter: Problem = {
     },
     pitfalls: [
       "Returning Infinity for resetAfterMs when refillRate is 0 — it isn't finite, so callers (and the tests) reject it. Return a large finite integer instead.",
+      "Rounding resetAfterMs up with Math.ceil — the spec says truncate toward 0, so use Math.floor (the value is never negative).",
       "Reporting a non-zero resetAfterMs on an allowed token-bucket request — the caller doesn't need to wait.",
       "Returning fractional remaining from the token bucket — use Math.floor, because only whole tokens pay for requests.",
       "Not saving the bucket on a rejection — the next call would add the same elapsed time again and over-refill.",
@@ -386,18 +408,51 @@ export const rateLimiter: Problem = {
   ],
   presets: [
     {
-      label: "Policy B: burst",
+      label: "A: exact limit",
+      values: {
+        strategy: "policy_a",
+        limit: "2",
+        windowMs: "10000",
+        capacity: "0",
+        refillRate: "0",
+        requests: '[[0,"alice","/v1/chat"],[3000,"alice","/v1/chat"],[3500,"alice","/v1/chat"]]',
+      },
+    },
+    {
+      label: "A: recovery",
+      values: {
+        strategy: "policy_a",
+        limit: "2",
+        windowMs: "120",
+        capacity: "0",
+        refillRate: "0",
+        requests: '[[0,"alice","/v1/chat"],[0,"alice","/v1/chat"],[140,"alice","/v1/chat"]]',
+      },
+    },
+    {
+      label: "B: burst",
       values: {
         strategy: "policy_b",
         limit: "0",
         windowMs: "0",
         capacity: "3",
         refillRate: "0.5",
-        requests: '[[0,"alice","/v1/chat"],[0,"alice","/v1/chat"],[0,"alice","/v1/chat"],[0,"alice","/v1/chat"],[2000,"alice","/v1/chat"]]',
+        requests: '[[0,"alice","/v1/chat"],[0,"alice","/v1/chat"],[0,"alice","/v1/chat"],[0,"alice","/v1/chat"]]',
       },
     },
     {
-      label: "Policy B: endpoints",
+      label: "B: partial refill",
+      values: {
+        strategy: "policy_b",
+        limit: "0",
+        windowMs: "0",
+        capacity: "3",
+        refillRate: "0.5",
+        requests: '[[0,"alice","/v1/chat"],[0,"alice","/v1/chat"],[0,"alice","/v1/chat"],[1200,"alice","/v1/chat"]]',
+      },
+    },
+    {
+      label: "B: endpoints",
       values: {
         strategy: "policy_b",
         limit: "2",
@@ -408,18 +463,7 @@ export const rateLimiter: Problem = {
       },
     },
     {
-      label: "Policy A: window",
-      values: {
-        strategy: "policy_a",
-        limit: "2",
-        windowMs: "500",
-        capacity: "0",
-        refillRate: "0",
-        requests: '[[0,"alice","/v1/chat"],[100,"alice","/v1/chat"],[200,"alice","/v1/chat"],[600,"alice","/v1/chat"]]',
-      },
-    },
-    {
-      label: "Policy A: clients",
+      label: "A: clients",
       values: {
         strategy: "policy_a",
         limit: "1",
@@ -439,6 +483,7 @@ export const rateLimiter: Problem = {
     const refillRate = expectNumber(input.refillRate, "refillRate", 0, 100);
     if (isA && (limit < 1 || limit > 10)) throw new Error("limit must be between 1 and 10 for policy_a.");
     if (isA && (windowMs < 1 || windowMs > 100_000)) throw new Error("windowMs must be between 1 and 100000 for policy_a.");
+    if (!isA && capacity < 1) throw new Error("capacity must be at least 1 for policy_b.");
     const requests = expectRequests(input.requests);
 
     const t = new Tracer();
@@ -645,12 +690,12 @@ export const rateLimiter: Problem = {
         s(L.bSetRejected, `Save ${fmt(refilled)} tokens at ${now}ms, so this elapsed time isn't counted again next call.`, {
           keyTone: "error",
         });
-        const resetAfterMs = refillRate > 0 ? Math.ceil(((1 - refilled) / refillRate) * 1000) : NEVER_MS;
+        const resetAfterMs = refillRate > 0 ? Math.floor(((1 - refilled) / refillRate) * 1000) : NEVER_MS;
         locals.resetAfterMs = showReset(resetAfterMs);
         s(
           L.bReset,
           refillRate > 0
-            ? `resetAfterMs = ceil((1 − ${fmt(refilled)}) / ${refillRate} × 1000) = ${resetAfterMs}ms until one whole token.`
+            ? `resetAfterMs = floor((1 − ${fmt(refilled)}) / ${refillRate} × 1000) = ${resetAfterMs}ms until one whole token.`
             : "refillRate is 0, so this bucket never refills. Report the largest finite wait, 2^63 − 1, instead of Infinity.",
           { keyTone: "error", changed: ["resetAfterMs"] },
         );
