@@ -47,18 +47,31 @@ type Props = {
   activeLine: number;
   recallMode: boolean;
   revealedLines: Set<number>;
+  className?: string;
 };
 
-export function CodePanel({ code, activeLine, recallMode, revealedLines }: Props) {
+export function CodePanel({ code, activeLine, recallMode, revealedLines, className }: Props) {
   const lines = code.split("\n");
+  const panelRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const panel = panelRef.current;
+    const line = activeRef.current;
+    if (!panel || !line) return;
+    if (panel.scrollHeight <= panel.clientHeight) {
+      line.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      return;
+    }
+    // The panel scrolls on its own, so keep the active line in view without moving the page.
+    const top = line.offsetTop;
+    if (top < panel.scrollTop || top + line.offsetHeight > panel.scrollTop + panel.clientHeight) {
+      panel.scrollTo({ top: top - panel.clientHeight / 3, behavior: "smooth" });
+    }
   }, [activeLine]);
 
   return (
-    <div className="overflow-x-auto rounded-lg bg-zinc-950/80 py-3 font-mono text-[13px] leading-6 ring-1 ring-border">
+    <div ref={panelRef} className={cn("relative overflow-x-auto rounded-lg bg-zinc-950/80 py-3 font-mono text-[13px] leading-6 ring-1 ring-border", className)}>
       {lines.map((line, idx) => {
         const n = idx + 1;
         const active = n === activeLine;

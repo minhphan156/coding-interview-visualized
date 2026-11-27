@@ -192,7 +192,7 @@ export function Visualizer({ slug }: { slug: string }) {
   );
 
   const canvasCard = (
-    <section className={cn("flex flex-col overflow-hidden rounded-xl border border-border bg-card/40", isDesktop ? "h-full" : "min-h-[420px] flex-1")}>
+    <section className={cn("flex flex-col overflow-hidden rounded-xl border border-border bg-card/40", isDesktop ? "h-full" : "h-[80dvh] min-h-[420px]")}>
       {"error" in result ? (
         <div className="m-auto max-w-sm p-6 text-center">
           <p className="font-medium">This input can&apos;t be visualized</p>
@@ -326,7 +326,13 @@ export function Visualizer({ slug }: { slug: string }) {
             Lines stay blurred until the walkthrough reaches them. Before each step, try to say the next line out loud.
           </p>
         )}
-        <CodePanel code={problem.code} activeLine={frame?.line ?? 0} recallMode={recallMode} revealedLines={revealedLines} />
+        <CodePanel
+          code={problem.code}
+          activeLine={frame?.line ?? 0}
+          recallMode={recallMode}
+          revealedLines={revealedLines}
+          className={cn(!isDesktop && "max-h-[70dvh] overflow-y-auto")}
+        />
         <div className="grid grid-cols-2 gap-2 text-xs">
           <div className="rounded-lg border border-border px-3 py-2">
             <div className="text-muted-foreground">Time</div>
